@@ -4,5 +4,5 @@
 class ROMReader
 {
     public:
-        void read();
+        uint8_t* read();
 };

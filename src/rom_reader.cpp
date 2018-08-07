@@ -1,17 +1,28 @@
+#include <stdint.h>
+#include <stdlib.h>
 #include "rom_reader.h"
 
-void ROMReader::read()
+uint8_t* ROMReader::read()
 {
+    uint8_t* file;
     long filesize;
     const char buffer[] = "/rom";
-    FILE* fp = fopen(buffer, "r+b");
+    FILE* fp = fopen(buffer, "rb");
     
-    if (fp == 0) {
+    if (fp == 0)
+    {
         printf("Failed to open file!\n");
+        return nullptr;
     }
         
     fseek(fp, 0, SEEK_END);
     filesize = ftell(fp);
-    printf("Length: %ld\n", filesize);
+    rewind(fp);
+    
+    file = (uint8_t*) malloc (sizeof(uint8_t)*filesize);
+    fread(file, 1, filesize, fp);
+    
     fclose(fp);
+    
+    return file;
 }
