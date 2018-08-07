@@ -1,0 +1,16 @@
+{
+  "name": "nes.wasm",
+  "version": "0.0.1",
+  "description": "NES/Famicon webassembly emulator written in C++",
+  "scripts": {
+    "compile": "bash build.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/star-collector/NES.wasm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/star-collector/NES.wasm/issues"
+  },
+  "homepage": "https://github.com/star-collector/NES.wasm#readme"
+}
