@@ -40,7 +40,8 @@
                     var fr = new FileReader();
 
                     fr.onload = function () {
-                        Module['FS_createDataFile']('/', 'rom', fr.result, true, true, true);
+                        var data = new Uint8Array(fr.result);
+                        Module['FS_createDataFile']('/', 'rom', data, true, true, true);
                         Module.ccall('loadROM', null, [], null);
                     };
                     fr.readAsArrayBuffer(fileInput.files[0]);
