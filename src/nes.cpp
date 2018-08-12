@@ -13,6 +13,7 @@ extern "C"
     {
         ROMReader* reader = new ROMReader();
         reader->read();
+        reader->clear();
     }
 }
 
@@ -20,7 +21,7 @@ void mainloop(void *arg)
 {
     context *ctx = static_cast<context*>(arg);
     SDL_Renderer *renderer = ctx->renderer;
-    
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
@@ -30,7 +31,7 @@ void mainloop(void *arg)
 int main()
 {
     context ctx;
-    
+
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window;
     SDL_Renderer *renderer;
@@ -39,7 +40,7 @@ int main()
     ctx.renderer = renderer;
 
     emscripten_set_main_loop_arg(mainloop, &ctx, -1, 1);
-    
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

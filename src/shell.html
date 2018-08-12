@@ -3,22 +3,19 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Emscripten-Generated Code</title>
+        <title>NES.wasm</title>
         <style>
             .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
             textarea.emscripten { font-family: monospace; width: 80%; }
             div.emscripten { text-align: center; }
             div.emscripten_border { border: 1px solid black; }
-            
+
             canvas.emscripten { border: 0px none; background-color: black; }
         </style>
     </head>
     <body>
         <hr/>
         <div class="emscripten" id="status">Downloading...</div>
-        <div class="emscripten">
-            <progress value="0" max="100" id="progress" hidden=1></progress>  
-        </div>
         <div class="emscripten_border">
             <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
         </div>
@@ -34,32 +31,26 @@
         <hr>
         <script type='text/javascript'>
             var statusElement = document.getElementById('status');
-            var progressElement = document.getElementById('progress');
             var Module = {
                 preRun: [],
                 postRun: [],
                 userFileInput: function(fileInput) {
-                    if (fileInput.files.length == 0)
-                        return;
-                    var file = fileInput.files[0];
+                    if (fileInput.files.length == 0) return;
 
                     var fr = new FileReader();
+
                     fr.onload = function () {
-                        var data = new Uint8Array(fr.result);
-
-                        Module['FS_createDataFile']('/', 'rom', data, true, true, true);
+                        Module['FS_createDataFile']('/', 'rom', fr.result, true, true, true);
                         Module.ccall('loadROM', null, [], null);
-
-                        fileInput.value = '';
                     };
-                    fr.readAsArrayBuffer(file);
+                    fr.readAsArrayBuffer(fileInput.files[0]);
                 },
                 print: (function() {
                     var element = document.getElementById('output');
                     if (element) element.value = '';
                     return function(text) {
                         if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
-                        
+
                         if (element) {
                             element.value += text + "\n";
                             element.scrollTop = element.scrollHeight;
@@ -68,11 +59,8 @@
                 })(),
                 printErr: function(text) {
                     if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
-                    if (0) {
-                        dump(text + '\n');
-                    } else {
-                        console.error(text);
-                    }
+
+                    console.error(text);
                 },
                 canvas: (function() {
                     var canvas = document.getElementById('canvas');
@@ -80,21 +68,7 @@
                     return canvas;
                 })(),
                 setStatus: function(text) {
-                    if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
                     if (text === Module.setStatus.text) return;
-                    var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-                    var now = Date.now();
-                    if (m && now - Date.now() < 30) return;
-                    if (m) {
-                        text = m[1];
-                        progressElement.value = parseInt(m[2])*100;
-                        progressElement.max = parseInt(m[4])*100;
-                        progressElement.hidden = false;
-                    } else {
-                        progressElement.value = null;
-                        progressElement.max = null;
-                        progressElement.hidden = true;
-                    }
                     statusElement.innerHTML = text;
                 },
                 totalDependencies: 0,
