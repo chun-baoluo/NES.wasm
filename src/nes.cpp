@@ -1,5 +1,7 @@
 #include <SDL2/SDL.h>
 #include <emscripten.h>
+
+#include "CPU.h"
 #include "rom_reader.h"
 
 struct context
@@ -12,7 +14,10 @@ extern "C"
     void EMSCRIPTEN_KEEPALIVE loadROM()
     {
         ROMReader* reader = new ROMReader();
-        reader->read();
+        uint8_t* rom = reader->read();
+        
+        CPU* cpu = new CPU(rom);    
+        
         reader->clear();
     }
 }
