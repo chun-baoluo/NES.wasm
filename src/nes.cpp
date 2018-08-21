@@ -15,10 +15,10 @@ extern "C"
     {
         ROMReader* reader = new ROMReader();
         uint8_t* rom = reader->read();
+        reader->clear();
         
         CPU* cpu = new CPU(rom);    
-        
-        reader->clear();
+        cpu->pulse();
     }
 }
 

@@ -9,11 +9,9 @@
         </style>
     </head>
     <body>
-        <div>
-            <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-        </div>
-        <hr/>
         <div style="text-align: center;">
+            <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+            <hr/>
             <input type="checkbox" id="resize">Resize canvas
             <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer &nbsp;&nbsp;&nbsp;
             <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, document.getElementById('resize').checked)">
@@ -21,7 +19,6 @@
         </div>
         <hr/>
         <textarea class="emscripten" id="output" rows="8" style="width: 80%;"></textarea>
-        <hr>
         <script type='text/javascript'>
             var Module = {
                 preRun: [],
