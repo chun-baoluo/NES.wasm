@@ -1,6 +1,6 @@
+#include <stdexcept>
 #include <stdint.h>
 #include <stdio.h>
-
 #include "CPU.h"
 
 CPU::CPU(uint8_t* rom)
@@ -8,77 +8,77 @@ CPU::CPU(uint8_t* rom)
     this->rom = rom;
 }
 
- int CPU::getN()
- {
-     return this->P & 0x80;
- }
+int CPU::getFlag(char flag)
+{
+    int offset = 0x00;
 
- int CPU::getV()
- {
-     return this->P & 0x40;
- }
+    switch(flag) {
+        case 'N':
+            offset = 0x07;
+            break;
+        case 'V':
+            offset = 0x06;
+            break;
+        case 'B':
+            offset = 0x04;
+            break;
+        case 'D':
+            offset = 0x03;
+            break;
+        case 'I':
+            offset = 0x02;
+            break;
+        case 'Z':
+            offset = 0x01;
+            break;
+        case 'C':
+            offset = 0x00;
+            break;
+        default:
+            throw std::invalid_argument("getFlag: Unknown flag!");
+            break;
+    }
 
- int CPU::getB()
- {
-     return this->P & 0x10;
- }
-
- int CPU::getD()
- {
-     return this->P & 0x08;
- }
-
- int CPU::getI()
- {
-     return this->P & 0x04;
- }
-
- int CPU::getZ()
- {
-     return this->P & 0x02;
- }
-
- int CPU::getC()
- {
-     return this->P & 0x01;
- }
+    return (this->P & (1 << offset)) > 0 ? 1 : 0;
+}
 
 void CPU::pulse()
 {
-    printf("%02X\n", this->rom[this->PC]);
+    switch(this->rom[this->PC++ - 0x8000]) {
+        #include "CPU.inc.cpp"
+    }
 }
 
-void CPU::setN(int value)
+void CPU::setFlag(char flag, int value)
 {
-    this->P = (value ? this->P | (1 << 0x07) : this->P & ~(1 << 0x07));
-}
+    int offset = 0x00;
 
-void CPU::setV(int value)
-{
-    this->P = (value ? this->P | (1 << 0x06) : this->P & ~(1 << 0x06));
-}
+    switch(flag) {
+        case 'N':
+            offset = 0x07;
+            break;
+        case 'V':
+            offset = 0x06;
+            break;
+        case 'B':
+            offset = 0x04;
+            break;
+        case 'D':
+            offset = 0x03;
+            break;
+        case 'I':
+            offset = 0x02;
+            break;
+        case 'Z':
+            offset = 0x01;
+            break;
+        case 'C':
+            offset = 0x00;
+            break;
+        default:
+            throw std::invalid_argument("setFlag: Unknown flag!");
+            break;
+    }
 
-void CPU::setB(int value)
-{
-    this->P = (value ? this->P | (1 << 0x04) : this->P & ~(1 << 0x04));
-}
-
-void CPU::setD(int value)
-{
-    this->P = (value ? this->P | (1 << 0x03) : this->P & ~(1 << 0x03));
-}
-
-void CPU::setI(int value)
-{
-    this->P = (value ? this->P | (1 << 0x02) : this->P & ~(1 << 0x02));
-}
-
-void CPU::setZ(int value)
-{
-    this->P = (value ? this->P | (1 << 0x01) : this->P & ~(1 << 0x01));
-}
-
-void CPU::setC(int value)
-{
-    this->P = (value ? this->P | 1 : this->P & 0);
+    this->P = (value ? this->P | (1 << offset) : this->P & ~(1 << offset));
 }
