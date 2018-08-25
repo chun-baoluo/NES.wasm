@@ -1,8 +1,9 @@
 #include <SDL2/SDL.h>
 #include <emscripten.h>
 
-#include "CPU.h"
-#include "rom_reader.h"
+#include "NES.h"
+
+NES* nes = nullptr;
 
 struct context
 {
@@ -13,12 +14,7 @@ extern "C"
 {
     void EMSCRIPTEN_KEEPALIVE loadROM()
     {
-        ROMReader* reader = new ROMReader();
-        uint8_t* rom = reader->read();
-        reader->clear();
-        
-        CPU* cpu = new CPU(rom);    
-        cpu->pulse();
+        nes = new NES();
     }
 }
 
@@ -31,6 +27,11 @@ void mainloop(void *arg)
     SDL_RenderClear(renderer);
 
     SDL_RenderPresent(renderer);
+
+    if(nes && nes->isReady()) {
+        nes->nextFrame();
+    }
+
 }
 
 int main()
@@ -40,7 +41,7 @@ int main()
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window;
     SDL_Renderer *renderer;
-    SDL_CreateWindowAndRenderer(255, 255, 0, &window, &renderer);
+    SDL_CreateWindowAndRenderer(341, 262, 0, &window, &renderer);
 
     ctx.renderer = renderer;
 

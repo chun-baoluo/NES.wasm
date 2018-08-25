@@ -44,6 +44,8 @@ int CPU::getFlag(char flag)
 
 void CPU::pulse()
 {
+    printf("CPU pulse: %02X;\n", this->rom[this->PC - 0x8000]);
+
     switch(this->rom[this->PC++ - 0x8000]) {
         #include "CPU.inc.cpp"
     }
