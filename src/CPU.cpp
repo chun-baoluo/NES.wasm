@@ -8,6 +8,11 @@ CPU::CPU(uint8_t* rom)
     this->rom = rom;
 }
 
+uint8_t CPU::ADDRImmediate()
+{
+    return this->rom[this->PC++ - 0x8000];
+}
+
 int CPU::getFlag(char flag)
 {
     int offset = 0x00;
@@ -42,13 +47,24 @@ int CPU::getFlag(char flag)
     return (this->P & (1 << offset)) > 0 ? 1 : 0;
 }
 
+void CPU::LDA(uint8_t value)
+{
+    this->A = value;
+}
+
 void CPU::pulse()
 {
-    printf("CPU pulse: %02X;\n", this->rom[this->PC - 0x8000]);
+    printf("CPU pulse.\n");
 
-    switch(this->rom[this->PC++ - 0x8000]) {
-        #include "CPU.inc.cpp"
+    if(!this->cycle) {
+        printf("Opcode: %02X;\n", this->rom[this->PC - 0x8000]);
+
+        switch(this->rom[this->PC++ - 0x8000]) {
+            #include "CPU.inc.cpp"
+        }
     }
+
+    this->cycle--;
 }
 
 void CPU::setFlag(char flag, int value)

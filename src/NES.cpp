@@ -2,7 +2,7 @@
 
 #include "CPU.h"
 #include "NES.h"
-#include "rom_reader.h"
+#include "ROMReader.h"
 
 NES::NES()
 {
@@ -21,5 +21,10 @@ bool NES::isReady()
 
 void NES::nextFrame()
 {
-    this->cpu->pulse();
+    for(int scanline = 0; scanline < 262; scanline++) {
+        for(int clock = 0; clock < 341; clock++) {
+            this->cpu->pulse();
+        }
+    }
+
 }

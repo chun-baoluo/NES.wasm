@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <memory>
 
-#include "rom_reader.h"
+#include "ROMReader.h"
 
 bool ROMReader::clear()
 {
@@ -16,14 +16,12 @@ uint8_t* ROMReader::read()
     long filesize;
     FILE* fp = fopen(this->filename, "rb");
 
-    if (fp == 0)
-    {
+    if (fp == 0) {
         printf("Failed to open file!\n");
         return nullptr;
     }
 
-    if (!this->verify(fp))
-    {
+    if (!this->verify(fp)) {
         printf("File is not a NES rom!\n");
         return nullptr;
     }

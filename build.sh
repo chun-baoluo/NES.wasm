@@ -1,6 +1,6 @@
 #! /bin/bash
 
-cpp=('./src/main.cpp' './src/NES.cpp' './src/rom_reader.cpp' './src/CPU.cpp')
+cpp=('./src/main.cpp' './src/NES.cpp' './src/ROMReader.cpp' './src/CPU.cpp')
 
 sep=' '
 cpp_str=$(printf "${sep}%s" "${cpp[@]}")
