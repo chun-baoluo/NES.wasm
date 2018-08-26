@@ -2,14 +2,15 @@
 
 #include "CPU.h"
 #include "NES.h"
+#include "RAM.h"
 #include "ROMReader.h"
 
 NES::NES()
 {
     ROMReader* reader = new ROMReader();
-    uint8_t* rom = reader->read();
+    this->ram = new RAM(reader->read());
+    this->cpu = new CPU(this->ram);
 
-    this->cpu = new CPU(rom);
     reader->clear();
     this->romLoaded = true;
 }

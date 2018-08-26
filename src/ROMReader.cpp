@@ -7,12 +7,12 @@
 
 bool ROMReader::clear()
 {
+    delete[] this->file;
     return remove(this->filename) == 0;
 }
 
 uint8_t* ROMReader::read()
 {
-    uint8_t* file;
     long filesize;
     FILE* fp = fopen(this->filename, "rb");
 
@@ -32,12 +32,12 @@ uint8_t* ROMReader::read()
 
     printf("Length: %ld\n", filesize);
 
-    file = new uint8_t[filesize];
-    fread(file, 1, filesize, fp);
+    this->file = new uint8_t[filesize];
+    fread(this->file, 1, filesize, fp);
 
     fclose(fp);
 
-    return file;
+    return this->file;
 }
 
 bool ROMReader::verify(FILE* t_fp) {
