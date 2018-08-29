@@ -8,7 +8,13 @@
 NES::NES()
 {
     ROMReader* reader = new ROMReader();
-    this->ram = new RAM(reader->read());
+    uint8_t* rom = reader->read();
+    
+    if(!rom) {
+        return;
+    }
+    
+    this->ram = new RAM(rom);
     this->cpu = new CPU(this->ram);
 
     reader->clear();

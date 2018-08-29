@@ -6,9 +6,9 @@ class CPU
 {
     public:
         CPU(RAM* ram);
-        int getFlag(char flag);
+        int getFlag(char&& flag);
         void pulse();
-        void setFlag(char flag, int value);
+        void setFlag(char&& flag, int value);
     private:
         uint8_t cycle = 0;
         RAM* ram = nullptr;

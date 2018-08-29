@@ -23,7 +23,7 @@ uint16_t CPU::ADDRImmediate()
     return this->PC++;
 }
 
-int CPU::getFlag(char flag)
+int CPU::getFlag(char&& flag)
 {
     int offset = 0x00;
 
@@ -96,7 +96,7 @@ void CPU::pulse()
     this->cycle--;
 }
 
-void CPU::setFlag(char flag, int value)
+void CPU::setFlag(char&& flag, int value)
 {
     int offset = 0x00;
 
