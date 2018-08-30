@@ -1,3 +1,7 @@
+// BPL nnn
+case 0x10:
+    CJMP('N', true);
+    break;
 // SEI
 case 0x78:
     this->setFlag('I', 1);

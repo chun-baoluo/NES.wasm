@@ -20,8 +20,11 @@ class CPU
         uint8_t P = 0x20;
         uint16_t PC = 0x4020;
 
+        int isNextPage(uint16_t address, uint16_t addressWithOffset);
+
         uint16_t ADDRAbsolute();
         uint16_t ADDRImmediate();
+        void CJMP(char&& flag, bool&& value);
         void LDA(uint16_t address);
         void LDX(uint16_t address);
         void STA(uint16_t address);
