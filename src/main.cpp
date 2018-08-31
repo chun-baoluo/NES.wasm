@@ -3,7 +3,7 @@
 
 #include "NES.h"
 
-NES* nes = nullptr;
+NES* nes = new NES();
 
 struct context
 {
@@ -12,9 +12,14 @@ struct context
 
 extern "C"
 {
-    void EMSCRIPTEN_KEEPALIVE loadROM()
+    void EMSCRIPTEN_KEEPALIVE start()
     {
-        nes = new NES();
+        nes->start();
+    }
+
+    void EMSCRIPTEN_KEEPALIVE stop()
+    {
+        nes->stop();
     }
 }
 
@@ -28,7 +33,7 @@ void mainloop(void *arg)
 
     SDL_RenderPresent(renderer);
 
-    if(nes && nes->isReady()) {
+    if(nes->isReady()) {
         nes->nextFrame();
     }
 

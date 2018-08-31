@@ -2,23 +2,13 @@
 
 #include "CPU.h"
 #include "NES.h"
+#include "PPU.h"
 #include "RAM.h"
 #include "ROMReader.h"
 
 NES::NES()
 {
-    ROMReader* reader = new ROMReader();
-    uint8_t* rom = reader->read();
-    
-    if(!rom) {
-        return;
-    }
-    
-    this->ram = new RAM(rom);
-    this->cpu = new CPU(this->ram);
-
-    reader->clear();
-    this->romLoaded = true;
+    this->reader = new ROMReader();
 }
 
 bool NES::isReady()
@@ -33,5 +23,25 @@ void NES::nextFrame()
             this->cpu->pulse();
         }
     }
+}
 
+void NES::start()
+{
+    uint8_t* rom = this->reader->read();
+
+    if(!rom) {
+        return;
+    }
+
+    this->ram = new RAM(rom);
+    this->cpu = new CPU(this->ram);
+    this->ppu = new PPU(this->ram);
+
+    this->reader->clear();
+    this->romLoaded = true;
+}
+
+void NES::stop()
+{
+    this->romLoaded = false;
 }
