@@ -3,7 +3,6 @@
 #include "CPU.h"
 #include "NES.h"
 #include "PPU.h"
-#include "RAM.h"
 #include "ROMReader.h"
 
 NES::NES()
@@ -33,9 +32,8 @@ void NES::start()
         return;
     }
 
-    this->ram = new RAM(rom);
-    this->cpu = new CPU(this->ram);
-    this->ppu = new PPU(this->ram);
+    this->cpu = new CPU(rom);
+    // this->ppu = new PPU();
 
     this->reader->clear();
     this->romLoaded = true;

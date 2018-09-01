@@ -2,11 +2,12 @@
 
 #include <stdint.h>
 
-class RAM {
+class RAM
+{
     public:
-        RAM(uint8_t* rom);
+        RAM(uint16_t size);
         uint8_t get(uint16_t address);
         void set(uint16_t address, uint8_t value);
-    private:
-        uint8_t* memory;
+    protected:
+        uint8_t* map;
 };

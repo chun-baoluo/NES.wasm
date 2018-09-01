@@ -1,13 +1,18 @@
+#include <cstring>
 #include <stdexcept>
 #include <stdint.h>
 #include <stdio.h>
 
 #include "CPU.h"
-#include "RAM.h"
 
-CPU::CPU(RAM* ram)
+CPU::CPU(uint8_t* rom)
 {
-    this->ram = ram;
+    this->memory = new CPUMemory(0xFFFF, rom);
+}
+
+CPU::CPUMemory::CPUMemory(uint16_t size, uint8_t* rom) : RAM(size)
+{
+    memcpy(this->map + 0x4020, rom + 0x10, sizeof(uint8_t) * 0xBFE0);
 }
 
 int CPU::isNextPage(uint16_t address, uint16_t addressWithOffset)
@@ -54,12 +59,12 @@ void CPU::pulse()
     printf("CPU pulse: 0x%04X;\n", this->PC);
 
     if(!this->cycle) {
-        printf("Opcode: 0x%02X; Address: 0x%04X;\n", this->ram->get(this->PC), this->PC);
+        printf("Opcode: 0x%02X; Address: 0x%04X;\n", this->memory->get(this->PC), this->PC);
 
-        switch(this->ram->get(this->PC)) {
+        switch(this->memory->get(this->PC)) {
             #include "CPU.inc.cpp"
         }
-        
+
         this->PC++;
     }
 
@@ -102,8 +107,8 @@ void CPU::setFlag(char&& flag, int value)
 
 uint16_t CPU::ADDRAbsolute()
 {
-    uint8_t low = this->ram->get(this->PC++);
-    uint8_t high = this->ram->get(this->PC++);
+    uint8_t low = this->memory->get(this->PC++);
+    uint8_t high = this->memory->get(this->PC++);
 
     return ((high & 0xFF) << 0x08) | (low & 0xFF);
 }
@@ -120,10 +125,10 @@ void CPU::CJMP(char&& flag, bool&& value)
         this->cycle = 2;
     };
 
-    int8_t num = this->ram->get(ADDRImmediate());
-    
+    int8_t num = this->memory->get(ADDRImmediate());
+
     printf("CJMP: 0x%02X\n", num);
-    
+
     this->PC += num - 1;
 
     this->cycle = 3 + this->isNextPage(this->PC - num, this->PC);
@@ -133,7 +138,7 @@ void CPU::LDA(uint16_t address)
 {
     printf("LDA: 0x%04X;\n", address);
 
-    int8_t value = this->ram->get(address);
+    int8_t value = this->memory->get(address);
 
     this->A = value;
 
@@ -145,7 +150,7 @@ void CPU::LDX(uint16_t address)
 {
     printf("LDX: 0x%04X;\n", address);
 
-    int8_t value = this->ram->get(address);
+    int8_t value = this->memory->get(address);
 
     this->X = value;
 
@@ -157,7 +162,7 @@ void CPU::STA(uint16_t address)
 {
     printf("STA: 0x%04X;\n", address);
 
-    this->ram->set(address, this->A);
+    this->memory->set(address, this->A);
 }
 
 void CPU::TXS()

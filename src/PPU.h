@@ -2,9 +2,15 @@
 
 #include "RAM.h"
 
-class PPU {
+class PPU
+{
     public:
-        PPU(RAM* ram);
+        PPU();
     private:
-        RAM* ram = nullptr;
+        class PPUMemory : public RAM
+        {
+            public:
+                PPUMemory(uint16_t size);
+        };
+        PPUMemory* memory = nullptr;
 };

@@ -5,13 +5,18 @@
 class CPU
 {
     public:
-        CPU(RAM* ram);
+        CPU(uint8_t* file);
         int getFlag(char&& flag);
         void pulse();
         void setFlag(char&& flag, int value);
     private:
+        class CPUMemory : public RAM
+        {
+            public:
+                CPUMemory(uint16_t size, uint8_t* rom);
+        };
         uint8_t cycle = 0;
-        RAM* ram = nullptr;
+        CPUMemory* memory = nullptr;
         uint8_t* rom = nullptr;
         uint8_t A = 0x00;
         uint8_t X = 0x00;

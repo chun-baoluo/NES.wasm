@@ -1,20 +1,18 @@
-#include <cstring>
 #include <stdint.h>
 
 #include "RAM.h"
 
-RAM::RAM(uint8_t* rom)
+RAM::RAM(uint16_t size)
 {
-    this->memory = new uint8_t[0xFFFF];
-    memcpy(this->memory + 0x4020, rom + 0x10, sizeof(uint8_t) * 0xBFE0);
+    this->map = new uint8_t[size];
 }
 
 uint8_t RAM::get(uint16_t address)
 {
-    return this->memory[address];
+    return this->map[address];
 }
 
 void RAM::set(uint16_t address, uint8_t value)
 {
-    this->memory[address] = value;
+    this->map[address] = value;
 }

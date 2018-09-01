@@ -1,7 +1,7 @@
 #include "PPU.h"
 #include "RAM.h"
 
-PPU::PPU(RAM* ram)
+PPU::PPUMemory::PPUMemory(uint16_t size) : RAM(size)
 {
-    this->ram = ram;
+
 }
