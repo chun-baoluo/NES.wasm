@@ -17,10 +17,24 @@ bool NES::isReady()
 
 void NES::nextFrame()
 {
-    for(int scanline = 0; scanline < 262; scanline++) {
-        for(int clock = 0; clock < 341; clock++) {
-            this->cpu->pulse();
-        }
+    // 0 is the pre-render line
+    for(int scanline = 0; scanline <= 262; scanline++) {
+        this->nextScanline(scanline);
+    }
+}
+
+void NES::nextScanline(int scanline)
+{
+    if(scanline == 0 || scanline == 241) {
+        uint8_t ppuStatus = this->cpu->memory->get(CPU::PPURegisters::PPUSTATUS);
+
+        ppuStatus = (!scanline ? ppuStatus & (~0x80) : ppuStatus | 0x80);
+
+        this->cpu->memory->set(CPU::PPURegisters::PPUSTATUS, ppuStatus);
+    }
+
+    for(int clock = 0; clock < 341; clock++) {
+        this->cpu->pulse();
     }
 }
 

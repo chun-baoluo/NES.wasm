@@ -18,4 +18,6 @@ class NES {
         RAM* ram = nullptr;
         ROMReader* reader = nullptr;
         bool romLoaded = false;
+
+        void nextScanline(int scanline);
 };

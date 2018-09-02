@@ -5,18 +5,33 @@
 class CPU
 {
     public:
-        CPU(uint8_t* file);
-        int getFlag(char&& flag);
-        void pulse();
-        void setFlag(char&& flag, int value);
-    private:
         class CPUMemory : public RAM
         {
             public:
                 CPUMemory(uint16_t size, uint8_t* rom);
         };
-        uint8_t cycle = 0;
+        struct PPURegisters {
+            static const uint16_t PPUCTRL = 0x2000;
+            static const uint16_t PPUMASK = 0x2001;
+            static const uint16_t PPUSTATUS = 0x2002;
+            static const uint16_t OAMADDR = 0x2003;
+            static const uint16_t OAMDATA = 0x2004;
+            static const uint16_t PPUSCROLL = 0x2005;
+            static const uint16_t PPUADDR = 0x2006;
+            static const uint16_t PPUDATA = 0x2007;
+            static const uint16_t OAMDMA = 0x4014;
+        };
+        
+        CPU(uint8_t* file);
+
         CPUMemory* memory = nullptr;
+
+        int getFlag(char&& flag);
+        void pulse();
+        void setFlag(char&& flag, int value);
+    private:
+        uint8_t cycle = 0;
+
         uint8_t* rom = nullptr;
         uint8_t A = 0x00;
         uint8_t X = 0x00;

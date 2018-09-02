@@ -107,8 +107,8 @@ void CPU::setFlag(char&& flag, int value)
 
 uint16_t CPU::ADDRAbsolute()
 {
-    uint8_t low = this->memory->get(this->PC++);
-    uint8_t high = this->memory->get(this->PC++);
+    uint8_t low = this->memory->get(++this->PC);
+    uint8_t high = this->memory->get(++this->PC);
 
     return ((high & 0xFF) << 0x08) | (low & 0xFF);
 }
