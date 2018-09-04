@@ -12,7 +12,7 @@ CPU::CPU(uint8_t* rom)
 
 CPU::CPUMemory::CPUMemory(uint16_t size, uint8_t* rom) : RAM(size)
 {
-    memcpy(this->map + 0x4020, rom + 0x10, sizeof(uint8_t) * 0xBFE0);
+    memcpy(this->map + 0x4020, rom, sizeof(uint8_t) * 0xBFE0);
 }
 
 int CPU::isNextPage(uint16_t address, uint16_t addressWithOffset)
@@ -113,9 +113,28 @@ uint16_t CPU::ADDRAbsolute()
     return ((high & 0xFF) << 0x08) | (low & 0xFF);
 }
 
+uint16_t CPU::ADDRAbsoluteX()
+{
+    return (ADDRAbsolute() + this->X) & 0xFFFF;
+}
+
 uint16_t CPU::ADDRImmediate()
 {
-    return this->PC++;
+    return ++this->PC;
+}
+
+uint16_t CPU::ADDRZeropage()
+{
+    return this->memory->get(++this->PC);
+}
+
+void CPU::BIT(uint16_t address)
+{
+    uint8_t value = this->memory->get(address);
+    
+    this->setFlag('Z', (this->A & value) == 0);
+    this->setFlag('N', (value & 0x80) == 0x80);
+    this->setFlag('V', (value & 0x40) == 0x40);
 }
 
 void CPU::CJMP(char&& flag, bool&& value)
@@ -132,6 +151,11 @@ void CPU::CJMP(char&& flag, bool&& value)
     this->PC += num - 1;
 
     this->cycle = 3 + this->isNextPage(this->PC - num, this->PC);
+}
+
+void CPU::JMP(uint16_t address)
+{
+    this->PC = address - 1;
 }
 
 void CPU::LDA(uint16_t address)
@@ -156,6 +180,21 @@ void CPU::LDX(uint16_t address)
 
     this->setFlag('N', value == 0);
     this->setFlag('Z', value < 0);
+}
+
+void CPU::ROL(uint16_t address)
+{    
+    uint8_t value = this->memory->get(address);
+    int carry = ((value & 0x80) > 0 ? 1 : 0);
+    
+    value = value << 1 | carry;
+    
+    this->memory->set(address, value);
+    
+    this->setFlag('Z', value == 0);
+    this->setFlag('Z', value < 0);
+    this->setFlag('C', carry);
+    
 }
 
 void CPU::STA(uint16_t address)
