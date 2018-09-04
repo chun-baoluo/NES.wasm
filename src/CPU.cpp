@@ -15,11 +15,6 @@ CPU::CPUMemory::CPUMemory(uint16_t size, uint8_t* rom) : RAM(size)
     memcpy(this->map + 0x4020, rom, sizeof(uint8_t) * 0xBFE0);
 }
 
-int CPU::isNextPage(uint16_t address, uint16_t addressWithOffset)
-{
-    return address >> 0x08 % 0xFF != addressWithOffset >> 0x08 % 0xFF;
-}
-
 int CPU::getFlag(char&& flag)
 {
     int offset = 0x00;
@@ -105,6 +100,16 @@ void CPU::setFlag(char&& flag, int value)
     this->P = (value ? this->P | (1 << offset) : this->P & ~(1 << offset));
 }
 
+void CPU::setCycle(int cycle)
+{
+    this->cycle = cycle;
+}
+
+void CPU::setCycle(int cycle, uint16_t address, uint16_t addressWithOffset)
+{
+    this->cycle = cycle + (address >> 0x08 % 0xFF != addressWithOffset >> 0x08 % 0xFF);
+}
+
 uint16_t CPU::ADDRAbsolute()
 {
     uint8_t low = this->memory->get(++this->PC);
@@ -150,7 +155,7 @@ void CPU::CJMP(char&& flag, bool&& value)
 
     this->PC += num - 1;
 
-    this->cycle = 3 + this->isNextPage(this->PC - num, this->PC);
+    setCycle(3, this->PC - num, this->PC);
 }
 
 void CPU::JMP(uint16_t address)
@@ -202,6 +207,13 @@ void CPU::STA(uint16_t address)
     printf("STA: 0x%04X;\n", address);
 
     this->memory->set(address, this->A);
+}
+
+void CPU::STY(uint16_t address)
+{
+    printf("STY: 0x%04X;\n", address);
+
+    this->memory->set(address, this->Y);
 }
 
 void CPU::TXS()

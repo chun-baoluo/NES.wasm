@@ -29,6 +29,9 @@ class CPU
         int getFlag(char&& flag);
         void pulse();
         void setFlag(char&& flag, int value);
+        void setCycle(int cycle);
+        void setCycle(int cycle, uint16_t address, uint16_t addressWithOffset);
+        
     private:
         uint8_t cycle = 0;
 
@@ -39,8 +42,6 @@ class CPU
         uint8_t S = 0xFF;
         uint8_t P = 0x20;
         uint16_t PC = 0x8000;
-
-        int isNextPage(uint16_t address, uint16_t addressWithOffset);
 
         uint16_t ADDRAbsolute();
         uint16_t ADDRAbsoluteX();
@@ -53,5 +54,6 @@ class CPU
         void LDX(uint16_t address);
         void ROL(uint16_t address);
         void STA(uint16_t address);
+        void STY(uint16_t address);
         void TXS();
 };
