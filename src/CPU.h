@@ -21,7 +21,7 @@ class CPU
             static const uint16_t PPUDATA = 0x2007;
             static const uint16_t OAMDMA = 0x4014;
         };
-        
+
         CPU(uint8_t* file);
 
         CPUMemory* memory = nullptr;
@@ -31,7 +31,7 @@ class CPU
         void setFlag(char&& flag, int value);
         void setCycle(int cycle);
         void setCycle(int cycle, uint16_t address, uint16_t addressWithOffset);
-        
+
     private:
         uint8_t cycle = 0;
 
@@ -49,6 +49,7 @@ class CPU
         uint16_t ADDRZeropage();
         void BIT(uint16_t address);
         void CJMP(char&& flag, bool&& value);
+        void CMP(uint16_t address);
         void JMP(uint16_t address);
         void LDA(uint16_t address);
         void LDX(uint16_t address);

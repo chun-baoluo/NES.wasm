@@ -1,7 +1,7 @@
 // BPL nnn
 case 0x10: {
     CJMP('N', true);
-    break;    
+    break;
 }
 // ROL nn
 case 0x26: {
@@ -28,9 +28,9 @@ case 0x4C: {
 }
 // SEI
 case 0x78: {
-    this->setFlag('I', 1);
+    setFlag('I', 1);
     setCycle(2);
-    break;    
+    break;
 }
 // TXS
 case 0x9A: {
@@ -60,13 +60,13 @@ case 0x8D: {
 case 0xA2: {
     LDX(ADDRImmediate());
     setCycle(2);
-    break;    
+    break;
 }
 // LDA #nn
 case 0xA9: {
     LDA(ADDRImmediate());
     setCycle(2);
-    break;    
+    break;
 }
 // LDA nnnn
 case 0xAD: {
@@ -81,12 +81,19 @@ case 0xBD: {
     setCycle(4, address, this->PC);
     break;
 }
+// CMP #nn
+case 0xC9: {
+    CMP(ADDRImmediate());
+    setCycle(2);
+    break;
+}
 // CLD
 case 0xD8: {
-    this->setFlag('D', 0);
+    setFlag('D', 0);
     setCycle(2);
     break;
 }
 default:
+    printf("Opcode: 0x%02X; Address: 0x%04X;\n", this->memory->get(this->PC), this->PC);
     throw std::invalid_argument("Unknown opcode!");
     break;

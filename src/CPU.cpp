@@ -12,7 +12,7 @@ CPU::CPU(uint8_t* rom)
 
 CPU::CPUMemory::CPUMemory(uint16_t size, uint8_t* rom) : RAM(size)
 {
-    memcpy(this->map + 0x4020, rom, sizeof(uint8_t) * 0xBFE0);
+    memcpy(this->map + 0x8000, rom + 0x10, sizeof(uint8_t) * 0x7FFF);
 }
 
 int CPU::getFlag(char&& flag)
@@ -51,11 +51,7 @@ int CPU::getFlag(char&& flag)
 
 void CPU::pulse()
 {
-    printf("CPU pulse: 0x%04X;\n", this->PC);
-
     if(!this->cycle) {
-        printf("Opcode: 0x%02X; Address: 0x%04X;\n", this->memory->get(this->PC), this->PC);
-
         switch(this->memory->get(this->PC)) {
             #include "CPU.inc.cpp"
         }
@@ -125,7 +121,7 @@ uint16_t CPU::ADDRAbsoluteX()
 
 uint16_t CPU::ADDRImmediate()
 {
-    return ++this->PC;
+    return this->PC++;
 }
 
 uint16_t CPU::ADDRZeropage()
@@ -136,7 +132,7 @@ uint16_t CPU::ADDRZeropage()
 void CPU::BIT(uint16_t address)
 {
     uint8_t value = this->memory->get(address);
-    
+
     this->setFlag('Z', (this->A & value) == 0);
     this->setFlag('N', (value & 0x80) == 0x80);
     this->setFlag('V', (value & 0x40) == 0x40);
@@ -151,11 +147,20 @@ void CPU::CJMP(char&& flag, bool&& value)
 
     int8_t num = this->memory->get(ADDRImmediate());
 
-    printf("CJMP: 0x%02X\n", num);
-
     this->PC += num - 1;
 
     setCycle(3, this->PC - num, this->PC);
+}
+
+void CPU::CMP(uint16_t address)
+{
+    uint8_t value = this->memory->get(address);
+
+    setFlag('Z', this->A == value);
+
+    setFlag('N', (int8_t)value < 0);
+
+    setFlag('C', this->A - value >= 0);
 }
 
 void CPU::JMP(uint16_t address)
@@ -165,54 +170,46 @@ void CPU::JMP(uint16_t address)
 
 void CPU::LDA(uint16_t address)
 {
-    printf("LDA: 0x%04X;\n", address);
-
     int8_t value = this->memory->get(address);
 
     this->A = value;
 
-    this->setFlag('N', value == 0);
-    this->setFlag('Z', value < 0);
+    this->setFlag('Z', value == 0);
+    this->setFlag('N', value < 0);
 }
 
 void CPU::LDX(uint16_t address)
 {
-    printf("LDX: 0x%04X;\n", address);
-
     int8_t value = this->memory->get(address);
 
     this->X = value;
 
-    this->setFlag('N', value == 0);
-    this->setFlag('Z', value < 0);
+    this->setFlag('Z', value == 0);
+    this->setFlag('N', value < 0);
 }
 
 void CPU::ROL(uint16_t address)
-{    
+{
     uint8_t value = this->memory->get(address);
     int carry = ((value & 0x80) > 0 ? 1 : 0);
-    
+
     value = value << 1 | carry;
-    
+
     this->memory->set(address, value);
-    
+
     this->setFlag('Z', value == 0);
     this->setFlag('Z', value < 0);
     this->setFlag('C', carry);
-    
+
 }
 
 void CPU::STA(uint16_t address)
 {
-    printf("STA: 0x%04X;\n", address);
-
     this->memory->set(address, this->A);
 }
 
 void CPU::STY(uint16_t address)
 {
-    printf("STY: 0x%04X;\n", address);
-
     this->memory->set(address, this->Y);
 }
 
