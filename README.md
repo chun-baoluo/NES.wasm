@@ -7,7 +7,7 @@ NES/Famicom emulation experiment written in C++. No emulation yet. At all.
 First, make sure you have Emscripten installed. Then run the following command in your terminal:
 
 ```sh
-    npm run compile
+    npm run build
 ```
 
 Include generated nes.js file in your project after compilation.

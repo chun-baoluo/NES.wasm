@@ -74,6 +74,11 @@ case 0xAD: {
     setCycle(4);
     break;
 }
+// BCS nnn
+case 0xB0: {
+    CJMP('C', false);
+    break;
+}
 // LDA nnnn, X
 case 0xBD: {
     uint16_t address = this->PC;
@@ -94,6 +99,6 @@ case 0xD8: {
     break;
 }
 default:
-    printf("Opcode: 0x%02X; Address: 0x%04X;\n", this->memory->get(this->PC), this->PC);
+    printf("ERROR - OPCODE: 0x%02X; ADDRESS: 0x%04X;\n", this->memory->get(this->PC), this->PC);
     throw std::invalid_argument("Unknown opcode!");
     break;

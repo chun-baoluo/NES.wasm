@@ -52,6 +52,10 @@ int CPU::getFlag(char&& flag)
 void CPU::pulse()
 {
     if(!this->cycle) {
+        if(DEBUG) {
+            printf("OPCODE: 0x%02X; ADRESS: 0x%04X;\n", this->memory->get(this->PC), this->PC);
+        }
+
         switch(this->memory->get(this->PC)) {
             #include "CPU.inc.cpp"
         }
@@ -121,7 +125,7 @@ uint16_t CPU::ADDRAbsoluteX()
 
 uint16_t CPU::ADDRImmediate()
 {
-    return this->PC++;
+    return ++this->PC;
 }
 
 uint16_t CPU::ADDRZeropage()
