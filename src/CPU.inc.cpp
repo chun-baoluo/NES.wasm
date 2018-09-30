@@ -3,6 +3,11 @@ case 0x10: {
     CJMP('N', true);
     break;
 }
+// JSR nnnn
+case 0x20: {
+    JSR(ADDRAbsolute());
+    break;
+}
 // ROL nn
 case 0x26: {
     ROL(ADDRZeropage());

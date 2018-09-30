@@ -51,8 +51,10 @@ class CPU
         void CJMP(char&& flag, bool&& value);
         void CMP(uint16_t address);
         void JMP(uint16_t address);
+        void JSR(uint16_t address);
         void LDA(uint16_t address);
         void LDX(uint16_t address);
+        void PUSH(uint8_t value);
         void ROL(uint16_t address);
         void STA(uint16_t address);
         void STY(uint16_t address);

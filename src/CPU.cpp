@@ -12,7 +12,7 @@ CPU::CPU(uint8_t* rom)
 
 CPU::CPUMemory::CPUMemory(uint16_t size, uint8_t* rom) : RAM(size)
 {
-    memcpy(this->map + 0x8000, rom + 0x10, sizeof(uint8_t) * 0x7FFF);
+    memcpy(this->map + 0x8000, rom, sizeof(uint8_t) * 0x7FFF);
 }
 
 int CPU::getFlag(char&& flag)
@@ -172,6 +172,13 @@ void CPU::JMP(uint16_t address)
     this->PC = address - 1;
 }
 
+void CPU::JSR(uint16_t address)
+{
+    this->PUSH(this->PC >> 8);
+    this->PUSH(this->PC);
+    this->PC = address - 1;
+}
+
 void CPU::LDA(uint16_t address)
 {
     int8_t value = this->memory->get(address);
@@ -190,6 +197,13 @@ void CPU::LDX(uint16_t address)
 
     this->setFlag('Z', value == 0);
     this->setFlag('N', value < 0);
+}
+
+void CPU::PUSH(uint8_t value)
+{
+    this->memory->set(this->S, value);
+
+    this->S = (this->S - 1) & 0xFF;
 }
 
 void CPU::ROL(uint16_t address)
