@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "NES/Famicon webassembly emulator written in C++",
   "scripts": {
-    "build": "bash build.sh",
-    "build:dev": "bash build.sh -d",
-    "build:prod": "bash build.sh"
+    "build": "node build.js",
+    "build:dev": "node build.js -d",
+    "build:prod": "node build.js"
   },
   "repository": {
     "type": "git",
