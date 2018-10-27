@@ -10,7 +10,8 @@ class CPU
             public:
                 CPUMemory(uint16_t size, uint8_t* rom);
         };
-        struct PPURegisters {
+        struct PPURegisters
+		{
             static const uint16_t PPUCTRL = 0x2000;
             static const uint16_t PPUMASK = 0x2001;
             static const uint16_t PPUSTATUS = 0x2002;

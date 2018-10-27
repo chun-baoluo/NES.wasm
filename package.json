@@ -5,7 +5,10 @@
   "scripts": {
     "build": "node build.js",
     "build:dev": "node build.js -d",
-    "build:prod": "node build.js"
+    "build:prod": "node build.js",
+	"watch": "node build.js -w",
+    "watch:dev": "node build.js -d -w",
+    "watch:prod": "node build.js -w"
   },
   "repository": {
     "type": "git",

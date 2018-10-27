@@ -1,6 +1,7 @@
 const { exec } = require('child_process');
-const project = 'NES.wasm';
-const debug = (process.argv[2] == '-d' || process.argv == '--debug');
+const fs = require('fs');
+const debug = (process.argv.includes('-d') || process.argv.includes('--debug'));
+const watch = (process.argv.includes('-w') || process.argv.includes('--watch'));
 const cpp = [
     "./src/main.cpp",
 	"./src/NES.cpp",
@@ -9,13 +10,36 @@ const cpp = [
 	"./src/RAM.cpp",
 	"./src/PPU.cpp"
 ];
-const command = `emcc -std=c++11 ${ cpp.join(' ') } -D DEBUG=${ debug } -s WASM=1 -s FORCE_FILESYSTEM=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall'] -s USE_SDL=2 -s ASSERTIONS=1 -s DISABLE_EXCEPTION_CATCHING=0 -O3 -o ./output/nes.js --pre-js ./src/js/nes.js`;
 
-console.log(command);
-exec(command, (err, stdout, stderr) => {
-    if (err) {
-        throw err
+class Builder {
+    constructor(cpp, debug, watch) {
+        this.command = `emcc -std=c++11 ${ cpp.join(' ') } -D DEBUG=${ debug } -s WASM=1 -s FORCE_FILESYSTEM=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall'] -s USE_SDL=2 -s ASSERTIONS=1 -s DISABLE_EXCEPTION_CATCHING=0 -O${debug ? '0' : '3'} -o ./output/nes.js --pre-js ./src/js/nes.js`;
+        this.isBuilding = false;
+
+        console.log(this.command);
+
+        watch && fs.watch('src', {
+            recursive: true
+        }, this.onChange.bind(this));
     };
 
-    console.log('NES.wasm build finished!');
-});
+    build() {
+        this.isBuilding = true;
+        console.log('NES.wasm build started...');
+
+        exec(this.command, (err, stdout, stderr) => {
+            if (err) {
+                throw err
+            };
+        
+            this.isBuilding = false;
+            console.log('NES.wasm build finished!');
+        });
+    }
+
+    onChange() {
+        !this.isBuilding && this.build();
+    };
+};
+
+new Builder(cpp, debug, watch).build();
