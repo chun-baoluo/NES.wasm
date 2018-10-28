@@ -27,6 +27,8 @@ class Builder {
         this.isBuilding = true;
         console.log('NES.wasm build started...');
 
+        !fs.existsSync('output') && exec('mkdir output');
+
         exec(this.command, (err, stdout, stderr) => {
             if (err) {
                 throw err

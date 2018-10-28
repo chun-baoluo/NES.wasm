@@ -61,11 +61,23 @@ case 0x8D: {
     setCycle(4);
     break;
 }
+// STX nnnn
+case 0x8E: {
+	STX(ADDRAbsolute());
+	setCycle(4);
+	break;
+}
 // LDX #nn
 case 0xA2: {
     LDX(ADDRImmediate());
     setCycle(2);
     break;
+}
+// LDX nn
+case 0xA6: {
+	LDX(ADDRZeropage());
+	setCycle(3);
+	break;
 }
 // LDA #nn
 case 0xA9: {

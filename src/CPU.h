@@ -42,12 +42,15 @@ class CPU
         uint8_t Y = 0x00;
         uint8_t S = 0xFF;
         uint8_t P = 0x20;
-        uint16_t PC = 0x8010;
+        uint16_t PC = 0x8000;
+
+		void resetVector();
 
         uint16_t ADDRAbsolute();
         uint16_t ADDRAbsoluteX();
         uint16_t ADDRImmediate();
         uint16_t ADDRZeropage();
+
         void BIT(uint16_t address);
         void CJMP(char&& flag, bool&& value);
         void CMP(uint16_t address);
@@ -59,5 +62,6 @@ class CPU
         void ROL(uint16_t address);
         void STA(uint16_t address);
         void STY(uint16_t address);
+		void STX(uint16_t address);
         void TXS();
 };

@@ -8,11 +8,13 @@
 CPU::CPU(uint8_t* rom)
 {
     this->memory = new CPUMemory(0xFFFF, rom);
+
+	this->resetVector();
 }
 
 CPU::CPUMemory::CPUMemory(uint16_t size, uint8_t* rom) : RAM(size)
 {
-    memcpy(this->map + 0x8000, rom, sizeof(uint8_t) * 0x7FFF);
+    memcpy(this->map + 0x7FF0, rom, sizeof(uint8_t) * 0x8010);
 }
 
 int CPU::getFlag(char&& flag)
@@ -47,6 +49,13 @@ int CPU::getFlag(char&& flag)
     }
 
     return (this->P & (1 << offset)) > 0 ? 1 : 0;
+}
+
+void CPU::resetVector()
+{
+	uint8_t low = this->memory->get(0xFFFC);
+	uint8_t high = this->memory->get(0xFFFD);
+	this->PC = ((high & 0xFF) << 0x08) | (low & 0xFF);
 }
 
 void CPU::pulse()
@@ -229,6 +238,11 @@ void CPU::STA(uint16_t address)
 void CPU::STY(uint16_t address)
 {
     this->memory->set(address, this->Y);
+}
+
+void CPU::STX(uint16_t address)
+{
+	this->memory->set(address, this->X);
 }
 
 void CPU::TXS()
