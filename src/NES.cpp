@@ -40,9 +40,9 @@ void NES::nextScanline(int scanline)
 
 void NES::start()
 {
-    uint8_t* rom = this->reader->read();
+	std::vector<uint8_t> rom = this->reader->read();
 
-    if(!rom) {
+    if(rom.empty()) {
         return;
     }
 

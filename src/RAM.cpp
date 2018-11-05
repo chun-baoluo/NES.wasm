@@ -1,11 +1,7 @@
 #include <stdint.h>
+#include <vector>
 
 #include "RAM.h"
-
-RAM::RAM(uint16_t size)
-{
-    this->map = new uint8_t[size];
-}
 
 uint8_t RAM::get(uint16_t address)
 {

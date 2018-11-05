@@ -1,48 +1,47 @@
+#include <fstream>
+#include <iostream>
+#include <memory>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <memory>
+#include <vector>
 
 #include "ROMReader.h"
 
 bool ROMReader::clear()
 {
-    delete[] this->file;
     return remove(this->filename) == 0;
 }
 
-uint8_t* ROMReader::read()
+std::vector<uint8_t> ROMReader::read()
 {
-    long filesize;
-    FILE* fp = fopen(this->filename, "rb");
+	std::ifstream fileStream(this->filename, std::ios::binary);
+	std::vector<uint8_t> file;
 
-    if (fp == 0) {
-        printf("Failed to open file!\n");
-        return nullptr;
-    }
+	if (!fileStream) {
+		printf("Failed to open file!\n");
+		return file;
+	}
 
-    if (!this->verify(fp)) {
-        printf("File is not a NES rom!\n");
-        return nullptr;
-    }
+	fileStream.unsetf(std::ios::skipws);
 
-    fseek(fp, 0, SEEK_END);
-    filesize = ftell(fp);
-    rewind(fp);
+	std::streampos fileSize;
 
-    printf("Length: %ld\n", filesize);
+	fileStream.seekg(0, std::ios::end);
+	fileSize = fileStream.tellg();
+	fileStream.seekg(0, std::ios::beg);
+	file.reserve(fileSize);
 
-    this->file = new uint8_t[filesize];
-    fread(this->file, 1, filesize, fp);
+	file.insert(file.begin(), std::istream_iterator<uint8_t>(fileStream), std::istream_iterator<uint8_t>());
 
-    fclose(fp);
+	if (!this->verify(file)) {
+		printf("File is not a NES rom!\n");
+		file.clear();
+	}
 
-    return this->file;
+    return file;
 }
 
-bool ROMReader::verify(FILE* t_fp) {
-    std::unique_ptr<uint8_t[]> buffer(new uint8_t[3]);
-    fread(buffer.get(), 1, 3, t_fp);
-    rewind(t_fp);
-    return (buffer[0] << 16) + (buffer[1] << 8) + buffer[2] == 0x4E4553;
+bool ROMReader::verify(std::vector<uint8_t> t_file) {
+    return (t_file[0] << 16) + (t_file[1] << 8) + t_file[2] == 0x4E4553;
 }

@@ -2,19 +2,28 @@
 #include <stdexcept>
 #include <stdint.h>
 #include <stdio.h>
+#include <vector>
 
 #include "CPU.h"
 
-CPU::CPU(uint8_t* rom)
+CPU::CPU(std::vector<uint8_t> rom)
 {
     this->memory = new CPUMemory(0xFFFF, rom);
 
 	this->resetVector();
 }
 
-CPU::CPUMemory::CPUMemory(uint16_t size, uint8_t* rom) : RAM(size)
+CPU::CPUMemory::CPUMemory(uint16_t size, std::vector<uint8_t> rom) : RAM()
 {
-    memcpy(this->map + 0x7FF0, rom, sizeof(uint8_t) * 0x8010);
+	std::vector<uint8_t> sliced(0x8000, 0x00);
+
+	sliced.insert(
+		sliced.end(),
+		std::make_move_iterator(rom.begin() + 0x10),
+		std::make_move_iterator(rom.end())
+	);
+
+	this->map = sliced;
 }
 
 int CPU::getFlag(char&& flag)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "RAM.h"
 
 class CPU
@@ -8,7 +10,7 @@ class CPU
         class CPUMemory : public RAM
         {
             public:
-                CPUMemory(uint16_t size, uint8_t* rom);
+                CPUMemory(uint16_t size, std::vector<uint8_t> rom);
         };
         struct PPURegisters
 		{
@@ -23,7 +25,7 @@ class CPU
             static const uint16_t OAMDMA = 0x4014;
         };
 
-        CPU(uint8_t* file);
+        CPU(std::vector<uint8_t> file);
 
         CPUMemory* memory = nullptr;
 

@@ -1,14 +1,15 @@
 #pragma once
 
+#include <stdint.h>
 #include <stdio.h>
+#include <vector>
 
 class ROMReader
 {
     public:
         bool clear();
-        uint8_t* read();
+		std::vector<uint8_t> read();
     private:
-        uint8_t* file = nullptr;
         const char filename[5] = "/rom";
-        bool verify(FILE* t_fp);
+        bool verify(std::vector<uint8_t> t_file);
 };
