@@ -169,7 +169,7 @@ void CPU::CJMP(char&& flag, bool&& value)
 
     int8_t num = this->memory->get(ADDRImmediate());
 
-    this->PC += num - 1;
+    this->PC += num;
 
     setCycle(3, this->PC - num, this->PC);
 }
