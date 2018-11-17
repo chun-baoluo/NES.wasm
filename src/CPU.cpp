@@ -217,6 +217,13 @@ void CPU::LDX(uint16_t address)
     this->setFlag('N', value < 0);
 }
 
+uint8_t CPU::POP()
+{
+	this->S = (this->S + 1) & 0xFF;
+
+	return this->memory->get(this->S);
+}
+
 void CPU::PUSH(uint8_t value)
 {
     this->memory->set(this->S, value);
@@ -237,6 +244,11 @@ void CPU::ROL(uint16_t address)
     this->setFlag('Z', value < 0);
     this->setFlag('C', carry);
 
+}
+void CPU::RTS()
+{
+	this->PC = this->POP();
+	this->PC += this->POP() << 8;
 }
 
 void CPU::STA(uint16_t address)

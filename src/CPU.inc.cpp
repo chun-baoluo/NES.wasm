@@ -31,6 +31,12 @@ case 0x4C: {
     setCycle(3);
     break;
 }
+// RTS
+case 0x60: {
+	RTS();
+	setCycle(6);
+	break;
+}
 // SEI
 case 0x78: {
     setFlag('I', 1);

@@ -60,8 +60,10 @@ class CPU
         void JSR(uint16_t address);
         void LDA(uint16_t address);
         void LDX(uint16_t address);
+		uint8_t POP();
         void PUSH(uint8_t value);
         void ROL(uint16_t address);
+		void RTS();
         void STA(uint16_t address);
         void STY(uint16_t address);
 		void STX(uint16_t address);

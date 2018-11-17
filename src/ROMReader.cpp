@@ -32,7 +32,6 @@ std::vector<uint8_t> ROMReader::read()
 	fileStream.seekg(0, std::ios::beg);
 	file.reserve(fileSize);
 
-	
 	file.insert(file.begin(), std::istream_iterator<uint8_t>(fileStream), std::istream_iterator<uint8_t>());
 
 	while (file.size() < 0x8000) {
