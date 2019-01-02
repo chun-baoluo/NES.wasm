@@ -1,35 +1,35 @@
 // BPL nnn
 case 0x10: {
-    CJMP('N', true);
-    break;
+	CJMP('N', true);
+	break;
 }
 // JSR nnnn
 case 0x20: {
-    JSR(ADDRAbsolute());
-    break;
+	JSR(ADDRAbsolute());
+	break;
 }
 // ROL nn
 case 0x26: {
-    ROL(ADDRZeropage());
-    setCycle(5);
-    break;
+	ROL(ADDRZeropage());
+	setCycle(5);
+	break;
 }
 // BIT nnnn
 case 0x2C: {
-    BIT(ADDRAbsolute());
-    setCycle(4);
-    break;
+	BIT(ADDRAbsolute());
+	setCycle(4);
+	break;
 }
 // BMI nnn
 case 0x30: {
-    CJMP('N', false);
-    break;
+	CJMP('N', false);
+	break;
 }
 // JMP nnnn
 case 0x4C: {
-    JMP(ADDRAbsolute());
-    setCycle(3);
-    break;
+	JMP(ADDRAbsolute());
+	setCycle(3);
+	break;
 }
 // RTS
 case 0x60: {
@@ -39,33 +39,33 @@ case 0x60: {
 }
 // SEI
 case 0x78: {
-    setFlag('I', 1);
-    setCycle(2);
-    break;
+	setFlag('I', 1);
+	setCycle(2);
+	break;
 }
 // TXS
 case 0x9A: {
-    TXS();
-    setCycle(2);
-    break;
+	TXS();
+	setCycle(2);
+	break;
 }
 // STY nn
 case 0x84: {
-    STY(ADDRZeropage());
-    setCycle(3);
-    break;
+	STY(ADDRZeropage());
+	setCycle(3);
+	break;
 }
 // STA nn
 case 0x85: {
-    STA(ADDRZeropage());
-    setCycle(3);
-    break;
+	STA(ADDRZeropage());
+	setCycle(3);
+	break;
 }
 // STA nnnn
 case 0x8D: {
-    STA(ADDRAbsolute());
-    setCycle(4);
-    break;
+	STA(ADDRAbsolute());
+	setCycle(4);
+	break;
 }
 // STX nnnn
 case 0x8E: {
@@ -73,11 +73,17 @@ case 0x8E: {
 	setCycle(4);
 	break;
 }
+// STA nn, X
+case 0x95: {
+	STA(ADDRZeropageX());
+	setCycle(4);
+	break;
+}
 // LDX #nn
 case 0xA2: {
-    LDX(ADDRImmediate());
-    setCycle(2);
-    break;
+	LDX(ADDRImmediate());
+	setCycle(2);
+	break;
 }
 // LDX nn
 case 0xA6: {
@@ -87,41 +93,52 @@ case 0xA6: {
 }
 // LDA #nn
 case 0xA9: {
-    LDA(ADDRImmediate());
-    setCycle(2);
-    break;
+	LDA(ADDRImmediate());
+	setCycle(2);
+	break;
 }
 // LDA nnnn
 case 0xAD: {
-    LDA(ADDRAbsolute());
-    setCycle(4);
-    break;
+	LDA(ADDRAbsolute());
+	setCycle(4);
+	break;
 }
 // BCS nnn
 case 0xB0: {
-    CJMP('C', false);
-    break;
+	CJMP('C', false);
+	break;
 }
 // LDA nnnn, X
 case 0xBD: {
-    uint16_t address = this->PC;
-    LDA(ADDRAbsoluteX());
-    setCycle(4, address, this->PC);
-    break;
+	uint16_t address = this->PC;
+	LDA(ADDRAbsoluteX());
+	setCycle(4, address, this->PC);
+	break;
 }
 // CMP #nn
 case 0xC9: {
-    CMP(ADDRImmediate());
-    setCycle(2);
-    break;
+	CMP(ADDRImmediate());
+	setCycle(2);
+	break;
+}
+// DEX
+case 0xCA: {
+	DEX();
+	setCycle(2);
+	break;
+}
+// BNE
+case 0xD0: {
+	CJMP('Z', true);
+	break;
 }
 // CLD
 case 0xD8: {
-    setFlag('D', 0);
-    setCycle(2);
-    break;
+	setFlag('D', 0);
+	setCycle(2);
+	break;
 }
 default:
-    printf("ERROR - OPCODE: 0x%02X; ADDRESS: 0x%04X;\n", this->memory->get(this->PC), this->PC);
-    throw std::invalid_argument("Unknown opcode!");
-    break;
+	printf("ERROR - OPCODE: 0x%02X; ADDRESS: 0x%04X;\n", this->memory->get(this->PC), this->PC);
+	throw std::invalid_argument("Unknown opcode!");
+	break;

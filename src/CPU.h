@@ -52,10 +52,12 @@ class CPU
         uint16_t ADDRAbsoluteX();
         uint16_t ADDRImmediate();
         uint16_t ADDRZeropage();
+		uint16_t ADDRZeropageX();
 
         void BIT(uint16_t address);
         void CJMP(char&& flag, bool&& value);
         void CMP(uint16_t address);
+		void DEX();
         void JMP(uint16_t address);
         void JSR(uint16_t address);
         void LDA(uint16_t address);

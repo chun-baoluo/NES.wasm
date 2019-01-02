@@ -151,6 +151,11 @@ uint16_t CPU::ADDRZeropage()
     return this->memory->get(++this->PC);
 }
 
+uint16_t CPU::ADDRZeropageX()
+{
+	return (ADDRZeropage() + this->X) & 0xFF;
+}
+
 void CPU::BIT(uint16_t address)
 {
     uint8_t value = this->memory->get(address);
@@ -164,7 +169,8 @@ void CPU::CJMP(char&& flag, bool&& value)
 {
     if(this->getFlag(std::move(flag)) == value) {
         this->PC++;
-        this->cycle = 2;
+        setSycle(2);
+		return;
     };
 
     int8_t num = this->memory->get(ADDRImmediate());
@@ -183,6 +189,14 @@ void CPU::CMP(uint16_t address)
     setFlag('N', (int8_t)value < 0);
 
     setFlag('C', this->A - value >= 0);
+}
+
+void CPU::DEX()
+{
+	this->X = (this->X - 1) & 0xFF;
+
+	this->setFlag('Z', this->X == 0);
+	this->setFlag('N', this->X < 0);
 }
 
 void CPU::JMP(uint16_t address)
